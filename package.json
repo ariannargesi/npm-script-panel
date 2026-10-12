@@ -1,0 +1,124 @@
+{
+  "name": "script-runner",
+  "displayName": "Script Runner",
+  "description": "Start, stop, restart and kill package.json scripts from a sidebar list, with each script's output in an expandable terminal right under it.",
+  "version": "0.1.0",
+  "publisher": "your-publisher-id",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "npm",
+    "pnpm",
+    "yarn",
+    "bun",
+    "scripts",
+    "terminal",
+    "package.json"
+  ],
+  "main": "./dist/extension.js",
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": false,
+      "description": "Script Runner runs the scripts defined in package.json, so it only works in a workspace you trust."
+    }
+  },
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "scriptRunner",
+          "title": "Script Runner",
+          "icon": "media/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "scriptRunner": [
+        {
+          "id": "scriptRunner.scripts",
+          "name": "Scripts",
+          "type": "webview"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "scriptRunner.stopAll",
+        "title": "Stop All Running Scripts",
+        "category": "Script Runner",
+        "icon": "$(debug-stop)"
+      },
+      {
+        "command": "scriptRunner.refresh",
+        "title": "Refresh",
+        "category": "Script Runner",
+        "icon": "$(refresh)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "scriptRunner.stopAll",
+          "when": "view == scriptRunner.scripts",
+          "group": "navigation@1"
+        },
+        {
+          "command": "scriptRunner.refresh",
+          "when": "view == scriptRunner.scripts",
+          "group": "navigation@2"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Script Runner",
+      "properties": {
+        "scriptRunner.packageManager": {
+          "type": "string",
+          "enum": [
+            "auto",
+            "npm",
+            "pnpm",
+            "yarn",
+            "bun"
+          ],
+          "default": "auto",
+          "description": "Package manager used to run scripts. 'auto' detects it from the packageManager field or the lockfile."
+        },
+        "scriptRunner.showPrePostScripts": {
+          "type": "boolean",
+          "default": false,
+          "description": "Show pre* and post* scripts as separate rows. By default they are hidden when the matching base script exists, since the package manager runs them automatically."
+        },
+        "scriptRunner.restartTimeoutMs": {
+          "type": "number",
+          "default": 5000,
+          "minimum": 500,
+          "description": "How long Restart waits for Ctrl+C to end the script before it kills the process tree."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "node esbuild.mjs",
+    "watch": "node esbuild.mjs --watch",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p src/webview",
+    "test": "vitest run",
+    "package": "vsce package --no-dependencies",
+    "vscode:prepublish": "node esbuild.mjs --production"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/vscode": "1.90.0",
+    "@vscode/vsce": "^3.0.0",
+    "@xterm/addon-fit": "^0.11.0",
+    "@xterm/xterm": "^6.0.0",
+    "esbuild": "^0.25.0",
+    "typescript": "^5.9.0",
+    "vitest": "^3.0.0"
+  }
+}

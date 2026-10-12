@@ -1,0 +1,14 @@
+{
+  "name": "script-runner-sample",
+  "private": true,
+  "scripts": {
+    "ticker": "node -e \"setInterval(() => console.log(new Date().toISOString()), 1000)\"",
+    "stubborn": "node -e \"process.on('SIGINT', () => console.log('ignoring Ctrl+C')); setInterval(() => {}, 1000)\"",
+    "fail": "node -e \"console.log('about to fail'); process.exit(3)\"",
+    "quick": "node -e \"console.log('done')\"",
+    "dev:server": "node -e \"require('http').createServer((_, r) => r.end('ok')).listen(4123, () => console.log('listening on 4123'))\"",
+    "prebuild": "node -e \"console.log('prebuild')\"",
+    "build": "node -e \"console.log('build')\"",
+    "postbuild": "node -e \"console.log('postbuild')\""
+  }
+}
